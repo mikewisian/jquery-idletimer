@@ -1,7 +1,7 @@
 /*!
  * jQuery idleTimer plugin
  * version 0.9.100511
- * by Paul Irish.
+ * Originally developed by Paul Irish. Forked by Mike Wisian
  *   http://github.com/paulirish/yui-misc/tree/
  * MIT license
 
@@ -30,6 +30,7 @@
  * THE SOFTWARE.
  */
 
+/* updated to pass custom events that will report the user as active by Mike Wisian */
 /* updated to fix Chrome setTimeout issue by Zaid Zawaideh */
 
  // API available in <= v0.8
@@ -39,6 +40,8 @@
  // timeout is in milliseconds; defaults to 30000
  $.idleTimer(10000);
 
+ // optionally pass in a list of events that report a user as active
+ $.idleTimer(10000,'mousemove keydown myCustomEvent');
 
  $(document).bind("idle.idleTimer", function(){
     // function you want to fire when the user goes idle
@@ -80,14 +83,14 @@
 
 (function($){
 
-$.idleTimer = function(newTimeout, elem){
+$.idleTimer = function(newTimeout, activeEvents, elem){
 
     // defaults that are to be stored as instance props on the elem
 
     var idle    = false,        //indicates if the user is idle
         enabled = true,        //indicates if the idle timer is enabled
         timeout = 30000,        //the amount of time (ms) before the user is considered idle
-        events  = 'mousemove keydown DOMMouseScroll mousewheel mousedown touchstart touchmove'; // activity is one of these events
+        events  = activeEvents || 'mousemove keydown DOMMouseScroll mousewheel mousedown touchstart touchmove'; // activity is one of these events
 
 
     elem = elem || document;
@@ -234,9 +237,9 @@ $.idleTimer = function(newTimeout, elem){
 
 
 // v0.9 API for defining multiple timers.
-$.fn.idleTimer = function(newTimeout){
+$.fn.idleTimer = function(newTimeout,activeEvents){
     if(this[0]){
-        $.idleTimer(newTimeout,this[0]);
+        $.idleTimer(newTimeout,activeEvents,this[0]);
     }
 
     return this;
